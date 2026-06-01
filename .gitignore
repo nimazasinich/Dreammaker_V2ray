@@ -1,0 +1,12 @@
+# Wrangler local dev artifacts
+.wrangler/
+
+# Environment secrets
+.env
+
+# Node modules (if wrangler is installed locally)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
