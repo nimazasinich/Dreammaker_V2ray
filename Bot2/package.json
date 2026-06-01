@@ -1,0 +1,11 @@
+{
+  "name": "dreammaker-sales-bot",
+  "version": "3.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --config wrangler-bot.toml",
+    "deploy": "wrangler deploy --config wrangler-bot.toml",
+    "dry-run": "wrangler deploy --dry-run --config wrangler-bot.toml"
+  }
+}

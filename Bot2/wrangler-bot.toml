@@ -1,0 +1,54 @@
+# Route: bot webhook endpoint
+# Telegram will POST to: https://dreammaker-groupsoft.ir/tgbot
+# ═══════════════════════════════════════════════════════════════════════════
+# 🤖 DreamMaker Sales Bot - Cloudflare Worker Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+name = "dreammaker-sales-bot"
+main = "bot.js"
+compatibility_date = "2025-05-10"
+account_id = "d902b91f0f1076e0601ffd6e7b4382c0"
+workers_dev = false
+preview_urls = false
+
+routes = [
+  { pattern = "dreammaker-groupsoft.ir/tgbot", zone_name = "dreammaker-groupsoft.ir" },
+  { pattern = "dreammaker-groupsoft.ir/mini-app", zone_name = "dreammaker-groupsoft.ir" },
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# KV Namespace Binding
+# ─────────────────────────────────────────────────────────────────────────────
+
+[[kv_namespaces]]
+binding = "HEALTH_KV"
+id = "ef1a164f23424e9a9b23721fb0d16133"
+preview_id = "ef1a164f23424e9a9b23721fb0d16133"
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Environment Variables
+# ─────────────────────────────────────────────────────────────────────────────
+
+[vars]
+BOT_USERNAME = "Freqbasterd_bot"
+BRAND_NAME = "DreamMaker"
+SUPPORT_USERNAME = "DreamMakerSupport"
+SUB_BASE_URL = "https://dreammaker-groupsoft.ir/sub?uuid="
+CDN_DOMAIN = "cdn.dreammaker-groupsoft.ir"
+MINI_APP_URL = "https://dreammaker-groupsoft.ir/mini-app"
+PANEL_NGINX_PROXY = "http://direct1.dreammaker-groupsoft.ir/panel-proxy"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Deployment Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Webhook URL: https://dreammaker-groupsoft.ir/tgbot
+# Set these as secrets:
+# wrangler secret put BOT_TOKEN_ENV
+# wrangler secret put ADMIN_CHAT_ID
+# wrangler secret put PANEL_USER
+# wrangler secret put PANEL_PASS
+# wrangler secret put TELEGRAM_WEBHOOK_SECRET

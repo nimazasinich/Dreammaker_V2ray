@@ -1,0 +1,47 @@
+name = "dreammaker-sales-bot"
+main = "bot.js"
+compatibility_date = "2026-05-13"
+workers_dev = false
+preview_urls = false
+
+routes = [
+  { pattern = "dreammaker-groupsoft.ir/tgbot", zone_name = "dreammaker-groupsoft.ir" },
+  { pattern = "dreammaker-groupsoft.ir/mini-app", zone_name = "dreammaker-groupsoft.ir" },
+]
+
+[[kv_namespaces]]
+binding = "HEALTH_KV"
+id = "PUT_PRODUCTION_KV_NAMESPACE_ID_HERE"
+preview_id = "PUT_PREVIEW_KV_NAMESPACE_ID_HERE"
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+[vars]
+ADMIN_CHAT_ID = "PUT_ADMIN_CHAT_ID_HERE"
+BOT_USERNAME = "PUT_BOT_USERNAME_HERE"
+BRAND_NAME = "DreamMaker"
+SUPPORT_USERNAME = "DreamMakerSupport"
+WORKER_BASE_URL = "https://your-worker-or-domain.example.com"
+SUB_BASE_URL = "https://dreammaker-groupsoft.ir/sub?uuid="
+CDN_DOMAIN = "cdn.dreammaker-groupsoft.ir"
+MINI_APP_URL = ""
+PANEL_NGINX_PROXY = "http://82.115.26.105:2053/panel-proxy"
+IDPAY_SANDBOX = "1"
+PAYMENT_REQUIRES_ADMIN_APPROVAL = "0"
+ALLOW_MANUAL_RECEIPT = "0"
+CARD_NUMBER = ""
+CARD_HOLDER = ""
+BUTTON_CUSTOM_EMOJI_ID = ""
+BUSINESS_CONNECTION_ID = ""
+
+# Set these as secrets:
+# wrangler secret put BOT_TOKEN_ENV
+# wrangler secret put ADMIN_CHAT_ID
+# wrangler secret put PANEL_USER
+# wrangler secret put PANEL_PASS
+# wrangler secret put IDPAY_API_KEY
+# wrangler secret put TELEGRAM_WEBHOOK_SECRET
+
+# Telegram webhook:  POST https://your-domain.example.com/tgbot
+# IDPay callback:    GET|POST https://your-domain.example.com/idpay/callback

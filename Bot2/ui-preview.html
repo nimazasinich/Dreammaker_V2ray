@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DreamMaker Telegram UI Preview</title>
+  <style>
+    :root {
+      --bg: #eef2f5;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #17202a;
+      --muted: #667085;
+      --line: #d9e1ea;
+      --primary: #0f766e;
+      --primary-2: #115e59;
+      --accent: #c2410c;
+      --gold: #b7791f;
+      --blue: #2563eb;
+      --danger: #b42318;
+      --ok: #15803d;
+      --shadow: 0 18px 50px rgba(15, 23, 42, .12);
+      --soft: 0 8px 22px rgba(15, 23, 42, .08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(15, 118, 110, .14), transparent 32%),
+        radial-gradient(circle at 86% 12%, rgba(194, 65, 12, .10), transparent 28%),
+        linear-gradient(180deg, #f8fafc, var(--bg));
+      font: 14px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .page {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 0 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-weight: 900;
+      box-shadow: var(--soft);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 22px; line-height: 1.2; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .segmented {
+      display: inline-grid;
+      grid-auto-flow: column;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: var(--soft);
+    }
+
+    .segmented button {
+      border: 0;
+      min-height: 40px;
+      padding: 0 13px;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .segmented button.active {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .phone-shell {
+      position: sticky;
+      top: 18px;
+      border-radius: 28px;
+      padding: 12px;
+      background: #111827;
+      box-shadow: var(--shadow);
+    }
+
+    .phone {
+      height: 780px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #e7eef5;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .chat-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 58px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      background: var(--primary);
+      flex: 0 0 auto;
+    }
+
+    .chat-body {
+      padding: 14px 10px 18px;
+      overflow: auto;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .bubble {
+      width: min(92%, 315px);
+      border-radius: 8px;
+      padding: 11px 12px;
+      background: var(--surface);
+      box-shadow: 0 2px 5px rgba(15, 23, 42, .06);
+      white-space: pre-wrap;
+    }
+
+    .bubble.user {
+      justify-self: end;
+      background: #d9fdd3;
+    }
+
+    .kbd {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .kbd button {
+      min-height: 38px;
+      border: 1px solid #c5d5e5;
+      border-radius: 8px;
+      color: #1d4ed8;
+      background: #f8fbff;
+      padding: 7px 8px;
+      white-space: normal;
+    }
+
+    .kbd .wide { grid-column: 1 / -1; }
+
+    .composer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .composer input {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 13px;
+      outline: none;
+    }
+
+    .composer button {
+      border: 0;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .workspace {
+      display: grid;
+      gap: 14px;
+    }
+
+    .band {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,.82);
+      box-shadow: var(--soft);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      display: grid;
+      align-content: center;
+      gap: 12px;
+    }
+
+    .hero h2 { font-size: 30px; line-height: 1.16; }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--surface-2);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .route {
+      min-height: 210px;
+      display: grid;
+      align-content: center;
+      gap: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 14px;
+      background:
+        radial-gradient(circle at 14% 16%, rgba(15,118,110,.18), transparent 34%),
+        linear-gradient(135deg, #ffffff, #eef4f8);
+    }
+
+    .route-line {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 7px;
+      direction: ltr;
+      align-items: center;
+    }
+
+    .node {
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(15, 118, 110, .25);
+      border-radius: 8px;
+      background: rgba(255,255,255,.72);
+      text-align: center;
+      padding: 8px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .arrow { color: var(--primary); font-weight: 900; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .status {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px;
+      background: rgba(255,255,255,.68);
+    }
+
+    .status strong { display: block; }
+
+    .advisor {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .usage-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .choice {
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      background: var(--surface);
+      padding: 10px;
+    }
+
+    .choice.active {
+      color: #fff;
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .recommend {
+      display: grid;
+      gap: 7px;
+      border: 1px solid rgba(15,118,110,.24);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(15,118,110,.08);
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .plan {
+      position: relative;
+      min-height: 190px;
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: linear-gradient(180deg, #fff, #f9fbfd);
+    }
+
+    .plan.active {
+      border-color: var(--primary);
+      outline: 2px solid rgba(15,118,110,.18);
+    }
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      inset-inline-end: 10px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--accent);
+      padding: 3px 8px;
+      font-size: 11px;
+    }
+
+    .plan-title {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding-inline-end: 64px;
+    }
+
+    .emoji { font-size: 24px; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: #fff;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .fit {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+
+    .fit span {
+      display: block;
+      width: var(--fit);
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--gold));
+    }
+
+    .price {
+      margin-top: auto;
+      font-size: 18px;
+      color: var(--primary-2);
+      font-weight: 900;
+    }
+
+    .usage-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 14px;
+    }
+
+    .graph-card {
+      display: grid;
+      gap: 12px;
+    }
+
+    .bars {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 92px 1fr 80px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .bar {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: var(--w);
+      background: var(--c, var(--primary));
+    }
+
+    .donut {
+      width: 180px;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary) 0 72%, #e5e7eb 72% 100%);
+      display: grid;
+      place-items: center;
+    }
+
+    .donut::before {
+      content: "";
+      width: 112px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--surface);
+      position: absolute;
+    }
+
+    .donut-label {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .donut-label strong {
+      display: block;
+      font-size: 25px;
+      color: var(--primary-2);
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 14px;
+    }
+
+    .code {
+      direction: ltr;
+      text-align: left;
+      overflow-wrap: anywhere;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .qr {
+      width: 170px;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border: 8px solid #fff;
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, #111 10px, transparent 10px) 0 0 / 20px 20px,
+        linear-gradient(#111 10px, transparent 10px) 0 0 / 20px 20px,
+        #fff;
+      box-shadow: inset 0 0 0 10px #fff, var(--soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qr::before, .qr::after {
+      content: "";
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border: 10px solid #111;
+      background: #fff;
+      top: 12px;
+    }
+
+    .qr::before { left: 12px; }
+    .qr::after { right: 12px; }
+
+    .alert-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--surface-2);
+    }
+
+    .switch {
+      width: 54px;
+      height: 30px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--primary);
+      padding: 3px;
+    }
+
+    .switch span {
+      display: block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fff;
+      transform: translateX(-24px);
+      transition: .18s ease;
+    }
+
+    html[dir="ltr"] .switch span { transform: translateX(24px); }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .admin-action {
+      min-height: 112px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .admin-action b { font-size: 15px; }
+
+    .preview-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .primary {
+      border: 0;
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 0 14px;
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 0 14px;
+      color: var(--text);
+      background: var(--surface);
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .phone-shell { position: static; width: min(390px, 100%); margin: 0 auto; }
+      .hero, .advisor, .usage-panel, .config-grid { grid-template-columns: 1fr; }
+      .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      .page { padding: 12px; }
+      .top { align-items: stretch; flex-direction: column; }
+      .plans, .admin-grid, .status-grid, .usage-buttons { grid-template-columns: 1fr; }
+      .route-line { grid-template-columns: 1fr; }
+      .arrow { display: none; }
+      .phone { height: 720px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div class="brand">
+        <div class="mark">DM</div>
+        <div>
+          <h1 data-i18n="title">DreamMaker Telegram UI Preview</h1>
+          <p class="muted" data-i18n="subtitle">Interactive preview of the customer bot, Mini App, usage center, and admin tools.</p>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="segmented" aria-label="language">
+          <button id="langFa" class="active" type="button">FA</button>
+          <button id="langEn" type="button">EN</button>
+        </div>
+        <div class="segmented" aria-label="preview mode">
+          <button class="mode active" type="button" data-mode="customer" data-i18n="customerMode">User</button>
+          <button class="mode" type="button" data-mode="admin" data-i18n="adminMode">Admin</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="layout">
+      <aside class="phone-shell" aria-label="Telegram phone preview">
+        <div class="phone">
+          <div class="chat-head">
+            <div class="avatar">DM</div>
+            <div>
+              <strong>DreamMaker VPN</strong>
+              <p class="muted small" data-i18n="botStatus">bot • online</p>
+            </div>
+          </div>
+          <div id="chatBody" class="chat-body"></div>
+          <div class="composer">
+            <input id="messageInput" data-i18n-placeholder="messagePlaceholder" placeholder="پیام...">
+            <button id="sendBtn" type="button">➤</button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <section class="band hero">
+          <div class="hero-copy">
+            <h2 data-i18n="heroTitle">یک تجربه متفاوت داخل تلگرام</h2>
+            <p class="muted" data-i18n="heroText">کاربر از داخل ربات، پلن را انتخاب می‌کند، مصرف را می‌بیند، کانفیگ و QR می‌گیرد و هشدار اتمام حجم را فعال می‌کند.</p>
+            <div class="chips">
+              <span class="chip">VLESS + XHTTP</span>
+              <span class="chip">Cloudflare CDN</span>
+              <span class="chip">3X-UI API</span>
+              <span class="chip">Telegram Mini App</span>
+            </div>
+            <div class="preview-controls">
+              <button class="primary" id="openStore" type="button" data-i18n="openStore">Smart Store</button>
+              <button class="secondary" id="openUsage" type="button" data-i18n="openUsage">Usage & Config</button>
+              <button class="secondary" id="openAdmin" type="button" data-i18n="openAdmin">Admin Preview</button>
+            </div>
+          </div>
+          <div class="route">
+            <div class="route-line">
+              <div class="node">Telegram</div>
+              <div class="arrow">→</div>
+              <div class="node">Cloudflare Worker</div>
+              <div class="arrow">→</div>
+              <div class="node">3X-UI / Xray</div>
+            </div>
+            <div class="status-grid">
+              <div class="status"><strong>XHTTP</strong><span class="muted small">primary transport</span></div>
+              <div class="status"><strong>IPv4</strong><span class="muted small">stable DNS</span></div>
+              <div class="status"><strong>DE</strong><span class="muted small">single backend</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="customerPanel" class="workspace">
+          <section class="band advisor">
+            <div>
+              <h2 data-i18n="assistTitle">DM Assist</h2>
+              <p class="muted" data-i18n="assistText">پیشنهاد هوشمند رایگان بر اساس نوع مصرف کاربر، بدون نیاز به API پولی.</p>
+            </div>
+            <div class="recommend">
+              <strong id="recommendTitle">پیشنهاد: Standard</strong>
+              <span id="recommendReason" class="muted">تعادل قیمت و حجم برای مصرف روزانه.</span>
+            </div>
+            <div class="usage-buttons">
+              <button class="choice" data-usage="chat" type="button" data-i18n="usageChat">پیام‌رسانی</button>
+              <button class="choice active" data-usage="stream" type="button" data-i18n="usageStream">استریم و وب</button>
+              <button class="choice" data-usage="pro" type="button" data-i18n="usagePro">حرفه‌ای</button>
+            </div>
+          </section>
+
+          <section class="band">
+            <h2 data-i18n="plansTitle">پلن‌ها</h2>
+            <p class="muted" data-i18n="plansText">کارت‌ها واکنش‌گرا هستند و برای انتخاب سریع داخل Mini App طراحی شده‌اند.</p>
+            <div id="plans" class="plans"></div>
+          </section>
+
+          <section class="band usage-panel">
+            <div class="graph-card">
+              <h2 data-i18n="usageTitle">نمودار مصرف</h2>
+              <p class="muted" data-i18n="usageText">نمونه وضعیت مصرف از اکانت متصل‌شده به 3X-UI.</p>
+              <div class="bars">
+                <div class="bar-row"><span data-i18n="used">مصرف‌شده</span><div class="bar"><span style="--w:72%;--c:var(--primary)"></span></div><strong>7.2GB</strong></div>
+                <div class="bar-row"><span data-i18n="download">دانلود</span><div class="bar"><span style="--w:66%;--c:var(--blue)"></span></div><strong>6.4GB</strong></div>
+                <div class="bar-row"><span data-i18n="upload">آپلود</span><div class="bar"><span style="--w:18%;--c:var(--gold)"></span></div><strong>0.8GB</strong></div>
+                <div class="bar-row"><span data-i18n="remain">باقی‌مانده</span><div class="bar"><span style="--w:28%;--c:var(--ok)"></span></div><strong>2.8GB</strong></div>
+              </div>
+              <div class="alert-row">
+                <div>
+                  <strong data-i18n="alertTitle">هشدار اتمام حجم</strong>
+                  <p class="muted small" data-i18n="alertText">وقتی کمتر از 1GB باقی بماند، ربات پیام می‌دهد.</p>
+                </div>
+                <button class="switch" id="alertSwitch" type="button" aria-label="alert toggle"><span></span></button>
+              </div>
+            </div>
+            <div>
+              <div class="donut"><div class="donut-label"><strong>72%</strong><span class="muted small" data-i18n="consumed">consumed</span></div></div>
+            </div>
+          </section>
+
+          <section class="band config-grid">
+            <div>
+              <h2 data-i18n="configTitle">کانفیگ و QR</h2>
+              <p class="muted" data-i18n="configText">پیام واقعی در تلگرام با protect_content ارسال می‌شود.</p>
+              <div class="code">vless://7dd47c02-8dce-4b12-9dbc-7cdb95a9e10e@cdn.dreammaker-groupsoft.ir:443?encryption=none&security=tls&sni=cdn.dreammaker-groupsoft.ir&type=xhttp&path=%2Fapi%2Fv1%2Fping#DM-Starter</div>
+            </div>
+            <div>
+              <div class="qr" title="QR preview"></div>
+              <p class="muted small" style="text-align:center;margin-top:10px" data-i18n="qrNote">نمای QR برای پیش‌نمایش</p>
+            </div>
+          </section>
+        </section>
+
+        <section id="adminPanel" class="band hidden">
+          <h2 data-i18n="adminTitle">پنل ادمین تلگرام</h2>
+          <p class="muted" data-i18n="adminText">ادمین از داخل تلگرام می‌تواند اکانت بسازد، آنلاین‌ها را ببیند، مصرف را بررسی کند و اکانت را حذف کند.</p>
+          <div class="admin-grid" style="margin-top:12px">
+            <div class="admin-action"><b>📊 <span data-i18n="admStats">وضعیت پنل</span></b><span class="muted small">7 inbounds • 128 users</span></div>
+            <div class="admin-action"><b>⭐ <span data-i18n="admCreate">ساخت اکانت</span></b><span class="muted small">Tier → email → config</span></div>
+            <div class="admin-action"><b>🟢 <span data-i18n="admOnline">آنلاین‌ها</span></b><span class="muted small">23 connected now</span></div>
+            <div class="admin-action"><b>🔎 <span data-i18n="admLookup">جستجوی اکانت</span></b><span class="muted small">traffic + status</span></div>
+            <div class="admin-action"><b>❌ <span data-i18n="admDelete">حذف اکانت</span></b><span class="muted small">safe by exact email</span></div>
+            <div class="admin-action"><b>📢 <span data-i18n="admBroadcast">ارسال همگانی</span></b><span class="muted small">all bot users</span></div>
+            <div class="admin-action"><b>📋 <span data-i18n="admOrders">سفارش‌ها</span></b><span class="muted small">approve / reject</span></div>
+            <div class="admin-action"><b>💬 <span data-i18n="admReply">پاسخ کاربر</span></b><span class="muted small">support workflow</span></div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const plans = [
+      { id: 'starter', emoji: '🌱', fa: 'استارتر', en: 'Starter', data: '1GB', price: '40,000', fit: 42 },
+      { id: 'basic', emoji: '📱', fa: 'بیسیک', en: 'Basic', data: '2GB', price: '70,000', fit: 58 },
+      { id: 'standard', emoji: '💼', fa: 'استاندارد', en: 'Standard', data: '5GB', price: '130,000', fit: 92, popular: true },
+      { id: 'plus', emoji: '⭐', fa: 'پلاس', en: 'Plus', data: '10GB', price: '220,000', fit: 84 },
+      { id: 'pro', emoji: '🚀', fa: 'پرو', en: 'Pro', data: '15GB', price: '300,000', fit: 76 },
+      { id: 'elite', emoji: '👑', fa: 'الیت', en: 'Elite', data: '20GB', price: '380,000', fit: 70 },
+    ];
+
+    const i18n = {
+      fa: {
+        title: 'پیش‌نمایش رابط تلگرام DreamMaker',
+        subtitle: 'نمای تعاملی ربات کاربر، مینی‌اپ، مصرف و ابزارهای ادمین.',
+        customerMode: 'کاربر',
+        adminMode: 'ادمین',
+        botStatus: 'ربات • آنلاین',
+        messagePlaceholder: 'پیام...',
+        heroTitle: 'یک تجربه متفاوت داخل تلگرام',
+        heroText: 'کاربر از داخل ربات، پلن را انتخاب می‌کند، مصرف را می‌بیند، کانفیگ و QR می‌گیرد و هشدار اتمام حجم را فعال می‌کند.',
+        openStore: 'فروشگاه هوشمند',
+        openUsage: 'مصرف و کانفیگ',
+        openAdmin: 'نمای ادمین',
+        assistTitle: 'DM Assist',
+        assistText: 'پیشنهاد هوشمند رایگان بر اساس نوع مصرف کاربر، بدون نیاز به API پولی.',
+        usageChat: 'پیام‌رسانی',
+        usageStream: 'استریم و وب',
+        usagePro: 'حرفه‌ای',
+        plansTitle: 'پلن‌ها',
+        plansText: 'کارت‌ها واکنش‌گرا هستند و برای انتخاب سریع داخل Mini App طراحی شده‌اند.',
+        data: 'حجم',
+        days: 'مدت',
+        price: 'قیمت',
+        popular: 'پرفروش',
+        usageTitle: 'نمودار مصرف',
+        usageText: 'نمونه وضعیت مصرف از اکانت متصل‌شده به 3X-UI.',
+        used: 'مصرف‌شده',
+        download: 'دانلود',
+        upload: 'آپلود',
+        remain: 'باقی‌مانده',
+        alertTitle: 'هشدار اتمام حجم',
+        alertText: 'وقتی کمتر از 1GB باقی بماند، ربات پیام می‌دهد.',
+        consumed: 'مصرف‌شده',
+        configTitle: 'کانفیگ و QR',
+        configText: 'پیام واقعی در تلگرام با protect_content ارسال می‌شود.',
+        qrNote: 'نمای QR برای پیش‌نمایش',
+        adminTitle: 'پنل ادمین تلگرام',
+        adminText: 'ادمین از داخل تلگرام می‌تواند اکانت بسازد، آنلاین‌ها را ببیند، مصرف را بررسی کند و اکانت را حذف کند.',
+        admStats: 'وضعیت پنل',
+        admCreate: 'ساخت اکانت',
+        admOnline: 'آنلاین‌ها',
+        admLookup: 'جستجوی اکانت',
+        admDelete: 'حذف اکانت',
+        admBroadcast: 'ارسال همگانی',
+        admOrders: 'سفارش‌ها',
+        admReply: 'پاسخ کاربر',
+        recommend: 'پیشنهاد: ',
+        reasonChat: 'برای مصرف سبک، Basic مقرون‌به‌صرفه‌تر است.',
+        reasonStream: 'برای استفاده روزانه، Standard بهترین تعادل حجم و قیمت را دارد.',
+        reasonPro: 'برای چند دستگاه یا مصرف سنگین، Pro پایدارتر است.',
+        chatWelcome: 'سلام! به DreamMaker خوش آمدید.\nاز منوی زیر شروع کنید:',
+        chatUsage: '📈 مصرف و کانفیگ\nاکانت متصل: dm-user\n\n████████░░░░ 72%\nمصرف‌شده: 7.2GB / 10GB\nباقی‌مانده: 2.8GB',
+        chatAdmin: '👨‍💼 پنل ادمین DreamMaker\nیکی از ابزارها را انتخاب کنید:',
+      },
+      en: {
+        title: 'DreamMaker Telegram UI Preview',
+        subtitle: 'Interactive preview of the customer bot, Mini App, usage center, and admin tools.',
+        customerMode: 'User',
+        adminMode: 'Admin',
+        botStatus: 'bot • online',
+        messagePlaceholder: 'Message...',
+        heroTitle: 'A different experience inside Telegram',
+        heroText: 'Users can choose plans, view usage, get config/QR, and enable low-traffic alerts from inside the bot.',
+        openStore: 'Smart Store',
+        openUsage: 'Usage & Config',
+        openAdmin: 'Admin Preview',
+        assistTitle: 'DM Assist',
+        assistText: 'Free smart recommendation based on user behavior, without a paid AI API.',
+        usageChat: 'Messaging',
+        usageStream: 'Streaming & Web',
+        usagePro: 'Professional',
+        plansTitle: 'Plans',
+        plansText: 'Responsive cards designed for fast selection inside the Mini App.',
+        data: 'Data',
+        days: 'Days',
+        price: 'Price',
+        popular: 'Best seller',
+        usageTitle: 'Usage Graph',
+        usageText: 'Sample usage status from a linked 3X-UI account.',
+        used: 'Used',
+        download: 'Download',
+        upload: 'Upload',
+        remain: 'Remaining',
+        alertTitle: 'Low Usage Alert',
+        alertText: 'The bot sends a message when less than 1GB remains.',
+        consumed: 'consumed',
+        configTitle: 'Config and QR',
+        configText: 'The real Telegram message is sent with protect_content.',
+        qrNote: 'QR preview placeholder',
+        adminTitle: 'Telegram Admin Panel',
+        adminText: 'Admins can create accounts, view online users, inspect usage, and delete accounts inside Telegram.',
+        admStats: 'Panel Status',
+        admCreate: 'Create Account',
+        admOnline: 'Online Users',
+        admLookup: 'Account Lookup',
+        admDelete: 'Delete Account',
+        admBroadcast: 'Broadcast',
+        admOrders: 'Orders',
+        admReply: 'Reply',
+        recommend: 'Recommended: ',
+        reasonChat: 'For light usage, Basic is more cost efficient.',
+        reasonStream: 'For daily use, Standard has the best data and price balance.',
+        reasonPro: 'For multi-device or heavy use, Pro is more stable.',
+        chatWelcome: 'Hello! Welcome to DreamMaker.\nStart from the menu below:',
+        chatUsage: '📈 Usage & Config\nLinked account: dm-user\n\n████████░░░░ 72%\nUsed: 7.2GB / 10GB\nRemaining: 2.8GB',
+        chatAdmin: '👨‍💼 DreamMaker Admin Panel\nChoose a tool:',
+      }
+    };
+
+    let lang = 'fa';
+    let mode = 'customer';
+    let usage = 'stream';
+    let selectedPlan = 'standard';
+
+    const $ = (q) => document.querySelector(q);
+    const $$ = (q) => [...document.querySelectorAll(q)];
+    const text = (key) => i18n[lang][key] || key;
+
+    function setLang(next) {
+      lang = next;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+      $('#langFa').classList.toggle('active', lang === 'fa');
+      $('#langEn').classList.toggle('active', lang === 'en');
+      render();
+    }
+
+    function setMode(next) {
+      mode = next;
+      $$('.mode').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+      $('#customerPanel').classList.toggle('hidden', mode !== 'customer');
+      $('#adminPanel').classList.toggle('hidden', mode !== 'admin');
+      renderChat();
+    }
+
+    function setUsage(next) {
+      usage = next;
+      selectedPlan = usage === 'chat' ? 'basic' : usage === 'pro' ? 'pro' : 'standard';
+      $$('.choice').forEach(btn => btn.classList.toggle('active', btn.dataset.usage === usage));
+      renderRecommendation();
+      renderPlans();
+    }
+
+    function renderI18n() {
+      $$('[data-i18n]').forEach(el => { el.textContent = text(el.dataset.i18n); });
+      $$('[data-i18n-placeholder]').forEach(el => { el.placeholder = text(el.dataset.i18nPlaceholder); });
+    }
+
+    function renderRecommendation() {
+      const pick = usage === 'chat' ? 'Basic' : usage === 'pro' ? 'Pro' : 'Standard';
+      $('#recommendTitle').textContent = text('recommend') + pick;
+      $('#recommendReason').textContent = usage === 'chat' ? text('reasonChat') : usage === 'pro' ? text('reasonPro') : text('reasonStream');
+    }
+
+    function renderPlans() {
+      const wrap = $('#plans');
+      wrap.innerHTML = '';
+      plans.forEach(plan => {
+        const card = document.createElement('article');
+        card.className = 'plan' + (plan.id === selectedPlan ? ' active' : '');
+        card.innerHTML = `
+          ${plan.popular ? `<span class="badge">${text('popular')}</span>` : ''}
+          <div class="plan-title"><span class="emoji">${plan.emoji}</span><h3>${lang === 'fa' ? plan.fa : plan.en}</h3></div>
+          <div class="metrics">
+            <div class="metric"><span>${text('data')}</span><strong>${plan.data}</strong></div>
+            <div class="metric"><span>${text('days')}</span><strong>30</strong></div>
+          </div>
+          <div class="fit" style="--fit:${plan.fit}%"><span></span></div>
+          <div class="price">${plan.price} تومان</div>
+        `;
+        card.addEventListener('click', () => {
+          selectedPlan = plan.id;
+          renderPlans();
+          renderChat('plan');
+        });
+        wrap.appendChild(card);
+      });
+    }
+
+    function keyboard(buttons) {
+      return `<div class="kbd">${buttons.map(b => `<button class="${b.wide ? 'wide' : ''}" type="button">${b.label}</button>`).join('')}</div>`;
+    }
+
+    function renderChat(state = '') {
+      const body = $('#chatBody');
+      const usageButtons = [
+        { label: text('openStore') },
+        { label: text('openUsage') },
+        { label: text('configTitle') },
+        { label: text('alertTitle'), wide: true },
+      ];
+      const adminButtons = [
+        { label: text('admStats') },
+        { label: text('admCreate') },
+        { label: text('admOnline') },
+        { label: text('admLookup') },
+        { label: text('admDelete') },
+        { label: text('admBroadcast') },
+      ];
+      let html = '';
+      if (mode === 'admin') {
+        html += `<div class="bubble">${text('chatAdmin')}${keyboard(adminButtons)}</div>`;
+      } else if (state === 'usage') {
+        html += `<div class="bubble user">${text('openUsage')}</div>`;
+        html += `<div class="bubble">${text('chatUsage')}${keyboard(usageButtons)}</div>`;
+      } else if (state === 'plan') {
+        const plan = plans.find(p => p.id === selectedPlan);
+        html += `<div class="bubble user">${lang === 'fa' ? plan.fa : plan.en}</div>`;
+        html += `<div class="bubble">✅ ${lang === 'fa' ? 'پلن انتخاب شد' : 'Plan selected'}\n${plan.data} • 30 ${text('days')}\n${plan.price} تومان${keyboard([{ label: lang === 'fa' ? 'تایید و ادامه' : 'Confirm' }, { label: lang === 'fa' ? 'بازگشت' : 'Back' }])}</div>`;
+      } else {
+        html += `<div class="bubble">${text('chatWelcome')}${keyboard(usageButtons)}</div>`;
+      }
+      body.innerHTML = html;
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function render() {
+      renderI18n();
+      renderRecommendation();
+      renderPlans();
+      renderChat();
+    }
+
+    $('#langFa').addEventListener('click', () => setLang('fa'));
+    $('#langEn').addEventListener('click', () => setLang('en'));
+    $$('.mode').forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+    $$('.choice').forEach(btn => btn.addEventListener('click', () => setUsage(btn.dataset.usage)));
+    $('#openStore').addEventListener('click', () => { selectedPlan = 'standard'; renderPlans(); renderChat('plan'); });
+    $('#openUsage').addEventListener('click', () => renderChat('usage'));
+    $('#openAdmin').addEventListener('click', () => setMode('admin'));
+    $('#sendBtn').addEventListener('click', () => {
+      const input = $('#messageInput');
+      if (!input.value.trim()) return;
+      $('#chatBody').insertAdjacentHTML('beforeend', `<div class="bubble user">${input.value}</div><div class="bubble">✅ ${lang === 'fa' ? 'پیام دریافت شد.' : 'Message received.'}</div>`);
+      input.value = '';
+    });
+
+    render();
+  </script>
+</body>
+</html>
